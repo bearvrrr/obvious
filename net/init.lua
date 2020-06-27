@@ -23,9 +23,9 @@ local function netinfo(interface)
   ret.send = 0
 
   for line in net:lines() do
-    if line:match("^%s+" .. interface) then
+    if line:match("^%s*" .. interface) then
       ret.recv = tonumber(line:match(":%s*(%d+)"))
-      ret.send = tonumber(line:match("(%d+)%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+$"))
+      ret.send = tonumber(line:match("(%d+)%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+$"))
     end
   end
   net:close()
