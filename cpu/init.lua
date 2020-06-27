@@ -13,7 +13,7 @@ local lib = {
 
 module("obvious.cpu")
 
-local function cpu_info()
+function cpu_info()
   local f = io.open("/proc/stat")
   local line = f:read()
   local ret = { }
@@ -35,7 +35,7 @@ local function cpu_info()
   return ret
 end
 
-local function cpu_usage(object)
+function cpu_usage(object)
   local last = object.cpu_last
   local cur = cpu_info()
   object.cpu_last = cur

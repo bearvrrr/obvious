@@ -12,7 +12,7 @@ local lib = {
 
 module("obvious.mem")
 
-local function mem_usage()
+function mem_usage()
   local f = io.open("/proc/meminfo")
   local ret = { }
 
