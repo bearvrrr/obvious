@@ -5,6 +5,7 @@
 
 local setmetatable = setmetatable
 local io = io
+local time = os.time
 local tonumber = tonumber
 local lib = {
   widget = require("obvious.lib.widget")
@@ -28,21 +29,24 @@ local function netinfo(interface)
     end
   end
   net:close()
+  ret.time = time()
   return ret
 end
 
-local function get_data(object)
+function get_data(object)
   local last = object.last
   local cur = netinfo(object.device)
   object.last = cur
 
   local ret = { }
   if last then
-    ret.recv = cur.recv - last.recv
-    ret.send = cur.send - last.send
+    ret.recv   = cur.recv - last.recv
+    ret.send   = cur.send - last.send
+    ret.period = cur.time - last.time
   else
     ret.recv = 0
     ret.send = 0
+    ret.period = 0
   end
 
   -- This can happen e.g. when an interface is brought down and up again
