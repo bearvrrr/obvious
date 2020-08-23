@@ -96,16 +96,17 @@ local function mixer(term, cardid)
   awful.util.spawn(term .. " -e 'alsamixer -c " .. cardid .. "'")
 end
 
-local function create(_, cardid, channel, abrv)
+local function create(_, cardid, channel, abrv, term)
   local cardid = cardid or 0
   local channel = channel or "Master"
   local abrv = abrv or "M"
+  local term = term or "x-terminal-emulator -T Mixer"
 
   local obj = {
     cardid = cardid,
     channel = channel,
     abrv = abrv,
-    term = "x-terminal-emulator -T Mixer"
+    term = term
   }
 
   local widget = wibox.widget.textbox()

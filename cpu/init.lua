@@ -11,7 +11,9 @@ local lib = {
   widget = require("obvious.lib.widget")
 }
 
-local function cpu_info()
+local cpu = {}
+
+function cpu.cpu_info()
   local f = io.open("/proc/stat")
   local line = f:read()
   local ret = { }
@@ -33,9 +35,9 @@ local function cpu_info()
   return ret
 end
 
-local function cpu_usage(object)
+function cpu.cpu_usage(object)
   local last = object.cpu_last
-  local cur = cpu_info()
+  local cur = cpu.cpu_info()
   object.cpu_last = cur
 
   -- Fake for starting
@@ -74,12 +76,13 @@ local function get_data_source()
 
   ret.max = 100
   ret.get = function(obj)
-    return cpu_usage(obj).perc
+    return cpu.cpu_usage(obj).perc
   end
 
   return lib.widget.from_data_source(ret)
 end
 
-return setmetatable({}, { __call = function (_, ...) return get_data_source(...) end })
+setmetatable(cpu, { __call = function (_, ...) return get_data_source(...) end })
+return cpu
 
 -- vim:ft=lua:ts=2:sw=2:sts=2:tw=80:et

@@ -5,9 +5,12 @@
 
 local io = io
 local tonumber = tonumber
+local time = os.time
 local lib = {
   widget = require("obvious.lib.widget")
 }
+
+local net = {}
 
 -- Returns the total traffic send/received on some interface
 local function netinfo(interface)
@@ -19,12 +22,13 @@ local function netinfo(interface)
   ret.send = 0
 
   for line in net:lines() do
-    if line:match("^%s+" .. interface) then
+    if line:match("^%s*" .. interface) then
       ret.recv = tonumber(line:match(":%s*(%d+)"))
-      ret.send = tonumber(line:match("(%d+)%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+$"))
+      ret.send = tonumber(line:match("(%d+)%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+$"))
     end
   end
   net:close()
+  ret.time = time()
   return ret
 end
 
@@ -37,9 +41,11 @@ local function get_data(object)
   if last then
     ret.recv = cur.recv - last.recv
     ret.send = cur.send - last.send
+    ret.period = cur.time - last.time
   else
     ret.recv = 0
     ret.send = 0
+    ret.period = 0
   end
 
   -- This can happen e.g. when an interface is brought down and up again
@@ -75,6 +81,7 @@ local function send(device)
 end
 
 return {
+  get_data = get_data,
   recv = recv,
   send = send,
 }
